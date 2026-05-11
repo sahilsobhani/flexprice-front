@@ -20,8 +20,9 @@ const createMockClient = () => {
 	};
 };
 
-const supabase = isSelfHosted
-	? (createMockClient() as any)
-	: createClient(config.auth.url, config.auth.anonKey);
+const supabase =
+	isSelfHosted || !config.auth.url || !config.auth.anonKey
+		? (createMockClient() as any)
+		: createClient(config.auth.url, config.auth.anonKey);
 
 export default supabase;
