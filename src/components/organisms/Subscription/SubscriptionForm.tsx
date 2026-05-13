@@ -18,6 +18,7 @@ import {
 	ENTITY_STATUS,
 	EXPAND,
 	Customer,
+	PRICE_TYPE,
 } from '@/models';
 import { BILLING_PERIOD, PAYMENT_TERMS_NONE, paymentTermsOptions } from '@/constants/constants';
 import { SubscriptionFormState } from '@/pages';
@@ -122,6 +123,20 @@ const SubscriptionForm = ({
 	const currentPrices = selectedPlanPrices?.items
 		? filterPlanPricesForSubscriptionCharges(selectedPlanPrices.items, state.billingPeriod, state.currency)
 		: [];
+
+	const hasFixedSubscriptionChargePrice = useMemo(() => {
+		if (!selectedPlanPrices?.items?.length) return false;
+		const filtered = filterPlanPricesForSubscriptionCharges(selectedPlanPrices.items, state.billingPeriod, state.currency);
+		return filtered.some((p) => p.type === PRICE_TYPE.FIXED);
+	}, [selectedPlanPrices?.items, state.billingPeriod, state.currency]);
+
+	useEffect(() => {
+		if (!hasFixedSubscriptionChargePrice) return;
+		setState((prev) => {
+			if (!prev.autoInvoiceThresholdEnabled && prev.autoInvoiceThreshold === '') return prev;
+			return { ...prev, autoInvoiceThresholdEnabled: false, autoInvoiceThreshold: '' };
+		});
+	}, [hasFixedSubscriptionChargePrice, setState]);
 
 	// Price overrides functionality for subscription-level
 	const { overriddenPrices, overridePrice, resetOverride } = usePriceOverrides(currentPrices);
@@ -903,7 +918,7 @@ const SubscriptionForm = ({
 							/>
 						</div>
 
-						<div className='flex flex-row items-center justify-between gap-4 px-4 py-3 bg-zinc-50/40'>
+						<div className='flex flex-row items-center justify-between gap-4 px-4 py-3 bg-zinc-50/40 border-b border-zinc-100/90'>
 							<label
 								htmlFor='subscription-billing-trial'
 								className='text-sm font-medium text-zinc-900 leading-snug cursor-pointer block min-w-0 flex-1 pr-3'>
@@ -923,6 +938,27 @@ const SubscriptionForm = ({
 								disabled={isDisabled || isLoadingPlanDetails}
 							/>
 						</div>
+
+						<div className='flex flex-row items-center justify-between gap-4 px-4 py-3'>
+							<label
+								htmlFor='subscription-billing-auto-invoice-threshold'
+								className='text-sm font-medium text-zinc-900 leading-snug cursor-pointer block min-w-0 flex-1 pr-3'>
+								Auto invoice threshold
+							</label>
+							<Switch
+								id='subscription-billing-auto-invoice-threshold'
+								className='shrink-0'
+								checked={state.autoInvoiceThresholdEnabled}
+								onCheckedChange={(value) => {
+									setState((prev) => ({
+										...prev,
+										autoInvoiceThresholdEnabled: value,
+										autoInvoiceThreshold: value ? prev.autoInvoiceThreshold : '',
+									}));
+								}}
+								disabled={isDisabled || isLoadingPlanDetails || hasFixedSubscriptionChargePrice}
+							/>
+						</div>
 					</div>
 					{state.subscriptionTrialEnabled && (
 						<Input
@@ -934,6 +970,17 @@ const SubscriptionForm = ({
 							suffix='days'
 							placeholder='14'
 							disabled={isDisabled || isLoadingPlanDetails}
+						/>
+					)}
+					{state.autoInvoiceThresholdEnabled && !hasFixedSubscriptionChargePrice && (
+						<DecimalUsageInput
+							label='Threshold amount'
+							value={state.autoInvoiceThreshold}
+							onChange={(value) => setState((prev) => ({ ...prev, autoInvoiceThreshold: value }))}
+							placeholder='e.g. 100.00'
+							disabled={isDisabled || isLoadingPlanDetails || hasFixedSubscriptionChargePrice}
+							precision={2}
+							min={0}
 						/>
 					)}
 				</div>

@@ -23,6 +23,7 @@ import {
 	PAYMENT_TERMS,
 	SUBSCRIPTION_PRORATION_BEHAVIOR,
 	SUBSCRIPTION_STATUS,
+	PRICE_TYPE,
 } from '@/models';
 import { InternalCreditGrantRequest, creditGrantToInternal, internalToCreateRequest } from '@/types/dto/CreditGrant';
 import { BILLING_PERIOD, PAYMENT_TERMS_NONE, SANDBOX_AUTO_CANCELLATION_DAYS } from '@/constants/constants';
@@ -53,6 +54,17 @@ import {
 	isOneTimePlanPrice,
 	uniqueRecurringBillingPeriodsFromPrices,
 } from '@/utils/subscription/planPricesForSubscriptionUi';
+
+function subscriptionChargesHaveFixedPrice(
+	prices: SearchPricesResponse | null,
+	billingPeriod: BILLING_PERIOD,
+	currency: string,
+	isPriceActiveFn: (price: { start_date?: string }) => boolean,
+): boolean {
+	const activeItems = prices?.items?.filter(isPriceActiveFn) ?? [];
+	const filtered = filterPlanPricesForSubscriptionCharges(activeItems, billingPeriod, currency);
+	return filtered.some((p) => p.type === PRICE_TYPE.FIXED);
+}
 
 type Params = {
 	id: string;
@@ -105,6 +117,9 @@ export type SubscriptionFormState = {
 	subscriptionTrialEnabled: boolean;
 	/** Day count when `subscriptionTrialEnabled`; empty when disabled. */
 	subscriptionTrialPeriodDays: string;
+	/** When true, create payload sends `auto_invoice_threshold` if plan charges include no FIXED prices. */
+	autoInvoiceThresholdEnabled: boolean;
+	autoInvoiceThreshold: string;
 };
 
 const usePlans = () => {
@@ -273,6 +288,8 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		inheritanceCustomers: [],
 		subscriptionTrialEnabled: false,
 		subscriptionTrialPeriodDays: '',
+		autoInvoiceThresholdEnabled: false,
+		autoInvoiceThreshold: '',
 	});
 
 	const { data: plans, isLoading: plansLoading, isError: plansError } = usePlans();
@@ -346,6 +363,13 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 						return { subscriptionTrialEnabled: true, subscriptionTrialPeriodDays: String(tpd) };
 					}
 					return { subscriptionTrialEnabled: false, subscriptionTrialPeriodDays: '' };
+				})(),
+				...(() => {
+					const ait = (subscriptionData.details as { auto_invoice_threshold?: number | null }).auto_invoice_threshold;
+					if (typeof ait === 'number' && Number.isFinite(ait)) {
+						return { autoInvoiceThresholdEnabled: true, autoInvoiceThreshold: String(ait) };
+					}
+					return { autoInvoiceThresholdEnabled: false, autoInvoiceThreshold: '' };
 				})(),
 			}));
 		}
@@ -447,6 +471,26 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			}
 		}
 
+		const hasFixedCharges = subscriptionChargesHaveFixedPrice(
+			subscriptionState.prices,
+			subscriptionState.billingPeriod,
+			subscriptionState.currency,
+			isPriceActive,
+		);
+		if (subscriptionState.autoInvoiceThresholdEnabled) {
+			if (hasFixedCharges) {
+				return 'Auto invoice threshold is not available when the plan includes fixed charges.';
+			}
+			const raw = subscriptionState.autoInvoiceThreshold.trim();
+			if (!raw) {
+				return 'Auto invoice threshold is required when enabled.';
+			}
+			const n = parseFloat(raw);
+			if (!Number.isFinite(n) || n < 0) {
+				return 'Enter a valid auto invoice threshold (0 or greater).';
+			}
+		}
+
 		return null;
 	};
 
@@ -485,7 +529,11 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			inheritanceCustomers,
 			subscriptionTrialEnabled,
 			subscriptionTrialPeriodDays,
+			autoInvoiceThresholdEnabled,
+			autoInvoiceThreshold,
 		} = subscriptionState;
+
+		const hasFixedSubscriptionChargePrice = subscriptionChargesHaveFixedPrice(prices, billingPeriod, currency, isPriceActive);
 
 		let finalStartDate: string;
 		let finalEndDate: string | undefined;
@@ -566,6 +614,14 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		const trial_period_days: number | undefined =
 			subscriptionTrialEnabled && subscriptionTrialPeriodDays.trim() !== '' ? parseInt(subscriptionTrialPeriodDays.trim(), 10) : undefined;
 
+		let auto_invoice_threshold: number | undefined;
+		if (autoInvoiceThresholdEnabled && !hasFixedSubscriptionChargePrice && autoInvoiceThreshold.trim() !== '') {
+			const parsed = parseFloat(autoInvoiceThreshold.trim());
+			if (Number.isFinite(parsed) && parsed >= 0) {
+				auto_invoice_threshold = parsed;
+			}
+		}
+
 		return {
 			billingPeriod,
 			selectedPlan,
@@ -591,6 +647,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			addedSubscriptionLineItems,
 			inheritanceExternalIds,
 			trial_period_days,
+			auto_invoice_threshold,
 		};
 	};
 
@@ -683,6 +740,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 					: undefined,
 			inheritance: Object.keys(inheritancePayload).length > 0 ? inheritancePayload : undefined,
 			...(sanitized.trial_period_days !== undefined ? { trial_period_days: sanitized.trial_period_days } : {}),
+			...(sanitized.auto_invoice_threshold !== undefined ? { auto_invoice_threshold: sanitized.auto_invoice_threshold } : {}),
 		};
 
 		setIsDraft(isDraftParam);
