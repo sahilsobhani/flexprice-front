@@ -1,12 +1,9 @@
-// src/pages/auth/templates/Template1/LandingSection.tsx
+// src/pages/auth/templates/FlexpriceDefault/LandingSection.tsx
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TestimonialCard } from '@/components/molecules';
 import { Testimonial } from '@/types';
 import authBg from '../../../../../assets/toolright.jpg';
-import { LandingContentAlign, LandingTheme, useBrand } from '@/config/branding';
-import { Template1Config } from '@/config/authTemplates';
-import { cn } from '@/lib/utils';
 
 const testimonials: Testimonial[] = [
 	{
@@ -82,17 +79,8 @@ const customerLogos = [
 
 const ANIMATION_DURATION = 90;
 
-interface LandingSectionProps {
-	config: Template1Config;
-}
-
-const LandingSection: React.FC<LandingSectionProps> = ({ config }) => {
+const LandingSection: React.FC = () => {
 	const { t } = useTranslation('auth');
-	const brand = useBrand();
-	const bgImage = config.loginBgImage ?? authBg;
-	const { showTestimonials, landingTheme, landingContentAlign, showLogoOnLanding } = config;
-	const isDark = landingTheme === LandingTheme.Dark;
-	const isLeft = landingContentAlign === LandingContentAlign.Left;
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -119,67 +107,52 @@ const LandingSection: React.FC<LandingSectionProps> = ({ config }) => {
 
 	return (
 		<section
-			className={cn(
-				'w-full min-h-full flex-1 pt-14 pb-12 flex flex-col',
-				isLeft ? 'items-start justify-center pl-16 pr-8' : 'items-center justify-center',
-			)}
+			className='w-full min-h-full flex-1 pt-14 pb-12 flex flex-col items-center justify-center'
 			style={{
-				backgroundImage: `url(${bgImage})`,
+				backgroundImage: `url(${authBg})`,
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
 				backgroundRepeat: 'no-repeat',
 			}}>
-			{showLogoOnLanding && <img src={brand.logo} alt={brand.name} className='mb-12 max-h-10 object-contain' />}
-			<h2
-				className={cn(
-					'mb-[44px] max-w-xl',
-					isDark ? 'text-5xl font-bold text-white leading-tight' : 'text-[28px] font-normal text-zinc-950',
-					isLeft ? 'text-start' : 'text-center',
-				)}>
-				{config.tagline ?? t('landing.defaultTagline')}
-			</h2>
-			{showTestimonials && (
-				<>
-					<div className='relative flex justify-center items-center w-full max-w-7xl h-[340px] mb-10'>
-						<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
-							<div className='flex gap-x-7 w-max'>
-								{cards.map((card, idx) => (
-									<TestimonialCard
-										key={`${card.companyName}-${idx}`}
-										testimonial={card}
-										logoHeightClass={
-											card.companyName === 'Clueso'
-												? 'max-h-4'
-												: card.companyName === 'Aftershoot'
-													? 'max-h-7'
-													: card.companyName === 'KRUTRIM'
-														? 'max-h-5'
-														: card.companyName === 'Truffle AI'
-															? 'max-h-4'
-															: 'max-h-6'
-										}
-									/>
-								))}
-							</div>
-						</div>
+			<h2 className='text-[28px] font-normal text-zinc-950 mb-[44px] text-center'>{t('landing.defaultTagline')}</h2>
+			<div className='relative flex justify-center items-center w-full max-w-7xl h-[340px] mb-10'>
+				<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
+					<div className='flex gap-x-7 w-max'>
+						{cards.map((card, idx) => (
+							<TestimonialCard
+								key={`${card.companyName}-${idx}`}
+								testimonial={card}
+								logoHeightClass={
+									card.companyName === 'Clueso'
+										? 'max-h-4'
+										: card.companyName === 'Aftershoot'
+											? 'max-h-7'
+											: card.companyName === 'KRUTRIM'
+												? 'max-h-5'
+												: card.companyName === 'Truffle AI'
+													? 'max-h-4'
+													: 'max-h-6'
+								}
+							/>
+						))}
 					</div>
-					<div className='w-full flex flex-col items-center mt-8'>
-						<div className='text-center font-inter text-black font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
-						<div className='w-full max-w-3xl grid grid-cols-3 grid-rows-2 gap-y-12 gap-x-12 justify-items-center items-center'>
-							{customerLogos.map((logo) => (
-								<div key={logo} className='flex items-center justify-center'>
-									<img
-										src={logo}
-										alt='customer logo'
-										className='max-h-10 object-contain transition-all duration-200'
-										style={{ maxWidth: 140 }}
-									/>
-								</div>
-							))}
+				</div>
+			</div>
+			<div className='w-full flex flex-col items-center mt-8'>
+				<div className='text-center font-inter text-black font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
+				<div className='w-full max-w-3xl grid grid-cols-3 grid-rows-2 gap-y-12 gap-x-12 justify-items-center items-center'>
+					{customerLogos.map((logo) => (
+						<div key={logo} className='flex items-center justify-center'>
+							<img
+								src={logo}
+								alt='customer logo'
+								className='max-h-10 object-contain transition-all duration-200'
+								style={{ maxWidth: 140 }}
+							/>
 						</div>
-					</div>
-				</>
-			)}
+					))}
+				</div>
+			</div>
 		</section>
 	);
 };

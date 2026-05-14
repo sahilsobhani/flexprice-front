@@ -1,8 +1,7 @@
-// src/pages/auth/templates/Template1/Template1.tsx
+// src/pages/auth/templates/FlexpriceDefault/FlexpriceDefault.tsx
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/config/branding';
-import { Template1Config } from '@/config/authTemplates';
 import { AuthTab } from '../../authTabs';
 import LandingSection from './LandingSection';
 import RegionSelector from '@/components/molecules/RegionSelector/RegionSelector';
@@ -12,13 +11,14 @@ import SignupForm from '../../SignupForm';
 import ForgotPasswordForm from '../../ForgotPasswordForm';
 import ResetPasswordForm from '../../ResetPasswordForm';
 
-interface Template1Props {
-	config: Template1Config;
+const SLACK_COMMUNITY_URL = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ';
+
+interface FlexpriceDefaultProps {
 	currentTab: AuthTab;
 	switchTab: (tab: AuthTab) => void;
 }
 
-const Template1: React.FC<Template1Props> = ({ config, currentTab, switchTab }) => {
+const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchTab }) => {
 	const { t } = useTranslation('auth');
 	const { logo, name } = useBrand();
 
@@ -38,17 +38,15 @@ const Template1: React.FC<Template1Props> = ({ config, currentTab, switchTab }) 
 	return (
 		<div className='flex w-full min-h-screen bg-white page !p-0 !flex-row'>
 			<div className='w-[45%] flex flex-col'>
-				{config.slackCommunityUrl && (
-					<a
-						href={config.slackCommunityUrl}
-						target='_blank'
-						rel='noopener noreferrer'
-						className='w-full h-[48px] flex items-center justify-center gap-2.5 cursor-pointer border-y border-gray-100 hover:opacity-90 transition-opacity'
-						style={{ background: 'linear-gradient(to right, #F7F7F7, #EDEDED, #F7F7F7)' }}>
-						<span className='text-[15px] font-medium text-gray-700'>{t('slackBanner', { brandName: name })}</span>
-						<img src='/assets/logo/slack-logo.png' alt='Slack Logo' className='h-4 w-auto' />
-					</a>
-				)}
+				<a
+					href={SLACK_COMMUNITY_URL}
+					target='_blank'
+					rel='noopener noreferrer'
+					className='w-full h-[48px] flex items-center justify-center gap-2.5 cursor-pointer border-y border-gray-100 hover:opacity-90 transition-opacity'
+					style={{ background: 'linear-gradient(to right, #F7F7F7, #EDEDED, #F7F7F7)' }}>
+					<span className='text-[15px] font-medium text-gray-700'>{t('slackBanner', { brandName: name })}</span>
+					<img src='/assets/logo/slack-logo.png' alt='Slack Logo' className='h-4 w-auto' />
+				</a>
 				<div className='flex-1 flex justify-center items-center pt-[10px]'>
 					<div className='flex flex-col justify-center max-w-xl w-[55%] mx-auto'>
 						<div className='flex justify-center mb-4'>
@@ -92,10 +90,10 @@ const Template1: React.FC<Template1Props> = ({ config, currentTab, switchTab }) 
 				</div>
 			</div>
 			<div className='w-[55%] min-h-screen flex'>
-				<LandingSection config={config} />
+				<LandingSection />
 			</div>
 		</div>
 	);
 };
 
-export default Template1;
+export default FlexpriceDefault;

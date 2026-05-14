@@ -6,13 +6,12 @@ import {
 	LandingTheme,
 	RegionOption,
 	RegionsConfig,
-	Template1Config,
 	Template2Config,
 } from './authTemplates';
 
-// Re-export for backward compat — all existing imports from branding.ts continue to work
+// Re-export for backward compat
 export { AUTH_TEMPLATE, LandingTheme, LandingContentAlign };
-export type { AuthPageConfig, Template1Config, Template2Config, RegionOption, RegionsConfig };
+export type { AuthPageConfig, Template2Config, RegionOption, RegionsConfig };
 
 export enum Locale {
 	En = 'en',
@@ -32,6 +31,7 @@ export interface BrandConfig {
 	logo: string;
 	primaryColor: string;
 	favicon: string;
+	supportEmail: string;
 }
 
 export interface I18nConfig {
@@ -47,137 +47,100 @@ export function deriveDirection(locale: Locale): Direction {
 	return RTL_LOCALES.has(locale) ? Direction.RTL : Direction.LTR;
 }
 
-const DEFAULT_SLACK_URL = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ';
+// ─── Pure parser functions (no import.meta.env inside) ───────────────────────
 
-export function parseBrandConfig(): BrandConfig {
-	try {
-		const raw = JSON.parse(import.meta.env.VITE_BRAND_CONFIG ?? '{}');
-		return {
-			name: raw.name ?? 'Flexprice',
-			logo: raw.logo ?? '/comicon.png',
-			primaryColor: raw.primaryColor ?? '#7C3AED',
-			favicon: raw.favicon ?? '/favicon.ico',
-		};
-	} catch {
-		return { name: 'Flexprice', logo: '/comicon.png', primaryColor: '#7C3AED', favicon: '/favicon.ico' };
-	}
-}
-
-export function parseAuthPageConfig(): AuthPageConfig {
-	try {
-		const raw = JSON.parse(import.meta.env.VITE_AUTH_CONFIG ?? '{}');
-		const template = (Object.values(AUTH_TEMPLATE) as string[]).includes(raw.template)
-			? (raw.template as AUTH_TEMPLATE)
-			: AUTH_TEMPLATE.TEMPLATE_1;
-
-		if (template === AUTH_TEMPLATE.TEMPLATE_2) {
-			return {
-				template: AUTH_TEMPLATE.TEMPLATE_2,
-				config: {
-					tagline: 'tagline' in raw ? raw.tagline : null,
-					supportEmail: raw.supportEmail ?? 'support@flexprice.io',
-					loginBgImage: 'loginBgImage' in raw ? raw.loginBgImage : null,
-					landingBgColor: raw.landingBgColor ?? null,
-					showLogoOnLanding: raw.showLogoOnLanding ?? false,
-				},
-			};
-		}
-
-		return {
-			template: AUTH_TEMPLATE.TEMPLATE_1,
-			config: {
-				tagline: 'tagline' in raw ? raw.tagline : null,
-				supportEmail: raw.supportEmail ?? 'support@flexprice.io',
-				loginBgImage: 'loginBgImage' in raw ? raw.loginBgImage : null,
-				slackCommunityUrl: 'slackCommunityUrl' in raw ? raw.slackCommunityUrl : DEFAULT_SLACK_URL,
-				showTestimonials: raw.showTestimonials ?? true,
-				landingTheme: (Object.values(LandingTheme) as string[]).includes(raw.landingTheme)
-					? (raw.landingTheme as LandingTheme)
-					: LandingTheme.Light,
-				landingContentAlign: (Object.values(LandingContentAlign) as string[]).includes(raw.landingContentAlign)
-					? (raw.landingContentAlign as LandingContentAlign)
-					: LandingContentAlign.Center,
-				showLogoOnLanding: raw.showLogoOnLanding ?? false,
-			},
-		};
-	} catch {
-		return {
-			template: AUTH_TEMPLATE.TEMPLATE_1,
-			config: {
-				tagline: null,
-				supportEmail: 'support@flexprice.io',
-				loginBgImage: null,
-				slackCommunityUrl: DEFAULT_SLACK_URL,
-				showTestimonials: true,
-				landingTheme: LandingTheme.Light,
-				landingContentAlign: LandingContentAlign.Center,
-				showLogoOnLanding: false,
-			},
-		};
-	}
-}
-
-export function parseRegionsConfig(): RegionsConfig {
-	try {
-		const raw = JSON.parse(import.meta.env.VITE_AUTH_CONFIG ?? '{}');
-		if (Array.isArray(raw.regions?.regions) && raw.regions.regions.length > 0) {
-			const validRegions: RegionOption[] = raw.regions.regions.filter(
-				(r: unknown): r is RegionOption =>
-					typeof r === 'object' &&
-					r !== null &&
-					typeof (r as RegionOption).key === 'string' &&
-					typeof (r as RegionOption).label === 'string' &&
-					typeof (r as RegionOption).url === 'string' &&
-					typeof (r as RegionOption).countryCode === 'string',
-			);
-			if (validRegions.length > 0) {
-				return { enabled: raw.regions.enabled ?? true, regions: validRegions };
-			}
-		}
-	} catch {
-		// fall through to legacy
-	}
-
-	// Backward-compat: build RegionOption[] from old env vars
-	if (import.meta.env.VITE_DATA_REGION_SELECTION_ENABLED !== 'true') {
-		return { enabled: false, regions: [] };
-	}
-	const regions: RegionOption[] = [];
-	if (import.meta.env.VITE_DASHBOARD_URL_INDIA) {
-		regions.push({ key: 'india', label: 'India', url: import.meta.env.VITE_DASHBOARD_URL_INDIA, countryCode: 'IN' });
-	}
-	if (import.meta.env.VITE_DASHBOARD_URL_US) {
-		regions.push({ key: 'us', label: 'United States', url: import.meta.env.VITE_DASHBOARD_URL_US, countryCode: 'US' });
-	}
+export function parseBrandConfig(raw: Record<string, unknown>): BrandConfig {
 	return {
-		enabled: regions.length > 0,
-		regions,
+		name: typeof raw.name === 'string' ? raw.name : 'Flexprice',
+		logo: typeof raw.logo === 'string' ? raw.logo : '/comicon.png',
+		primaryColor: typeof raw.primaryColor === 'string' ? raw.primaryColor : '#7C3AED',
+		favicon: typeof raw.favicon === 'string' ? raw.favicon : '/favicon.ico',
+		supportEmail: typeof raw.supportEmail === 'string' ? raw.supportEmail : 'support@flexprice.io',
 	};
 }
 
-export function parseAllowedLocales(): Locale[] {
-	try {
-		const raw = JSON.parse(import.meta.env.VITE_AUTH_CONFIG ?? '{}');
-		if (Array.isArray(raw.allowedLocales) && raw.allowedLocales.length > 0) {
-			return raw.allowedLocales.filter((l: string): l is Locale => (Object.values(Locale) as string[]).includes(l));
+export function parseAuthPageConfig(raw: Record<string, unknown>): AuthPageConfig {
+	// Accept 'template_1' as a backward-compat alias for 'flexprice_default'
+	const templateRaw = raw.template;
+	if (templateRaw === AUTH_TEMPLATE.TEMPLATE_2) {
+		return {
+			template: AUTH_TEMPLATE.TEMPLATE_2,
+			config: {
+				tagline: 'tagline' in raw ? (raw.tagline as string | null) : null,
+				loginBgImage: 'loginBgImage' in raw ? (raw.loginBgImage as string | null) : null,
+				landingBgColor: typeof raw.landingBgColor === 'string' ? raw.landingBgColor : null,
+				showLogoOnLanding: raw.showLogoOnLanding === true,
+			},
+		};
+	}
+	return { template: AUTH_TEMPLATE.FLEXPRICE_DEFAULT };
+}
+
+export function parseRegionsConfig(
+	authRaw: Record<string, unknown>,
+	legacyEnvs: { indiaUrl?: string; usUrl?: string; selectionEnabled: boolean },
+): RegionsConfig {
+	const regionsBlock = authRaw.regions as Record<string, unknown> | undefined;
+	if (Array.isArray(regionsBlock?.regions) && (regionsBlock.regions as unknown[]).length > 0) {
+		const validRegions: RegionOption[] = (regionsBlock.regions as unknown[]).filter(
+			(r): r is RegionOption =>
+				typeof r === 'object' &&
+				r !== null &&
+				typeof (r as RegionOption).key === 'string' &&
+				typeof (r as RegionOption).label === 'string' &&
+				typeof (r as RegionOption).url === 'string' &&
+				typeof (r as RegionOption).countryCode === 'string',
+		);
+		if (validRegions.length > 0) {
+			return { enabled: regionsBlock.enabled !== false, regions: validRegions };
 		}
-	} catch {
-		// fall through
+	}
+
+	// Backward-compat: legacy env vars
+	if (!legacyEnvs.selectionEnabled) return { enabled: false, regions: [] };
+	const regions: RegionOption[] = [];
+	if (legacyEnvs.indiaUrl) regions.push({ key: 'india', label: 'India', url: legacyEnvs.indiaUrl, countryCode: 'IN' });
+	if (legacyEnvs.usUrl) regions.push({ key: 'us', label: 'United States', url: legacyEnvs.usUrl, countryCode: 'US' });
+	return { enabled: regions.length > 0, regions };
+}
+
+export function parseAllowedLocales(raw: Record<string, unknown>): Locale[] {
+	if (Array.isArray(raw.allowedLocales) && raw.allowedLocales.length > 0) {
+		const filtered = (raw.allowedLocales as unknown[]).filter((l): l is Locale =>
+			(Object.values(Locale) as string[]).includes(l as string),
+		);
+		if (filtered.length > 0) return filtered;
 	}
 	return SUPPORTED_LOCALES;
 }
 
-export function parseI18nConfig(): I18nConfig {
-	const rawLocale = import.meta.env.VITE_DEFAULT_LOCALE ?? Locale.En;
-	const locale = (Object.values(Locale) as string[]).includes(rawLocale) ? (rawLocale as Locale) : Locale.En;
+export function parseI18nConfig(defaultLocale?: string): I18nConfig {
+	const locale = defaultLocale && (Object.values(Locale) as string[]).includes(defaultLocale) ? (defaultLocale as Locale) : Locale.En;
 	return { locale, direction: deriveDirection(locale) };
 }
 
-export const brandConfig: BrandConfig = parseBrandConfig();
-export const authPageConfig: AuthPageConfig = parseAuthPageConfig();
-export const regionsConfig: RegionsConfig = parseRegionsConfig();
-export const allowedLocalesConfig: Locale[] = parseAllowedLocales();
-export const i18nConfig: I18nConfig = parseI18nConfig();
+// ─── Module-level initialization (only place import.meta.env is read) ─────────
+
+function _safeJsonParse(raw: string | undefined): Record<string, unknown> {
+	try {
+		return JSON.parse(raw ?? '{}');
+	} catch {
+		return {};
+	}
+}
+
+const _brandRaw = _safeJsonParse(import.meta.env.VITE_BRAND_CONFIG);
+const _authRaw = _safeJsonParse(import.meta.env.VITE_AUTH_CONFIG);
+
+export const brandConfig: BrandConfig = parseBrandConfig(_brandRaw);
+export const authPageConfig: AuthPageConfig = parseAuthPageConfig(_authRaw);
+export const regionsConfig: RegionsConfig = parseRegionsConfig(_authRaw, {
+	indiaUrl: import.meta.env.VITE_DASHBOARD_URL_INDIA,
+	usUrl: import.meta.env.VITE_DASHBOARD_URL_US,
+	selectionEnabled: import.meta.env.VITE_DATA_REGION_SELECTION_ENABLED === 'true',
+});
+export const allowedLocalesConfig: Locale[] = parseAllowedLocales(_authRaw);
+export const i18nConfig: I18nConfig = parseI18nConfig(import.meta.env.VITE_DEFAULT_LOCALE);
 
 /** Returns the app's active brand config. Not a React hook — safe to call anywhere. */
 export function useBrand(): BrandConfig {

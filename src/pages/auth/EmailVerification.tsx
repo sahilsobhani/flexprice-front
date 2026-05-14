@@ -13,7 +13,6 @@ const EmailVerification = () => {
 	const location = useLocation();
 	const { t } = useTranslation('auth');
 	const { logo, name } = useBrand();
-	const { authPage } = config;
 
 	const searchParams = new URLSearchParams(location.search);
 	const email = searchParams.get('email') || '';
@@ -84,8 +83,8 @@ const EmailVerification = () => {
 
 				<p className='mt-5 text-center text-sm text-zinc-500'>
 					{t('verification.needHelp')}{' '}
-					<a href={`mailto:${authPage.config.supportEmail}`} className='font-medium text-blue-600 hover:text-blue-500'>
-						{authPage.config.supportEmail}
+					<a href={`mailto:${config.brand.supportEmail}`} className='font-medium text-blue-600 hover:text-blue-500'>
+						{config.brand.supportEmail}
 					</a>
 				</p>
 			</div>

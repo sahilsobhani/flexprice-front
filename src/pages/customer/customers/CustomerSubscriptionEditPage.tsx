@@ -17,7 +17,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router';
-import { LineItem, SUBSCRIPTION_LINE_ITEM_EDIT_MODE, SUBSCRIPTION_STATUS, SUBSCRIPTION_TYPE } from '@/models/Subscription';
+import { LineItem, SUBSCRIPTION_LINE_ITEM_EDIT_MODE, SUBSCRIPTION_STATUS } from '@/models/Subscription';
 import { PRICE_TYPE } from '@/models/Price';
 import PriceOverrideDialog from '@/components/molecules/PriceOverrideDialog/PriceOverrideDialog';
 import AddSubscriptionChargeDialog, {
@@ -129,10 +129,6 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 	});
 
 	const inheritedSubscriptionRows = inheritedSubscriptionsData?.items ?? [];
-
-	const isParentSubscription = subscriptionDetails?.subscription_type?.toLowerCase() === SUBSCRIPTION_TYPE.PARENT;
-	const showInheritingCustomersSection =
-		!!subscriptionDetails?.customer_id && (isParentSubscription || inheritedSubscriptionRows.length > 0);
 
 	const { mutate: updateLineItem } = useMutation({
 		mutationFn: async ({ lineItemId, updateData }: { lineItemId: string; updateData: UpdateSubscriptionLineItemRequest }) => {
@@ -339,19 +335,17 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 						/>
 						<Spacer height={16} />
 
-						{showInheritingCustomersSection && (
-							<SubscriptionEditInheritingCustomersSection
-								parentSubscriptionId={subscriptionId}
-								parentCustomerId={subscriptionDetails.customer_id}
-								inheritingSubscriptions={inheritedSubscriptionRows}
-								isListLoading={isInheritedSubscriptionsLoading}
-								isAddDisabled={
-									subscriptionReadOnly ||
-									subscriptionDetails.subscription_status === SUBSCRIPTION_STATUS.CANCELLED ||
-									subscriptionDetails.subscription_status === SUBSCRIPTION_STATUS.TRIALING
-								}
-							/>
-						)}
+						<SubscriptionEditInheritingCustomersSection
+							parentSubscriptionId={subscriptionId}
+							parentCustomerId={subscriptionDetails.customer_id}
+							inheritingSubscriptions={inheritedSubscriptionRows}
+							isListLoading={isInheritedSubscriptionsLoading}
+							isAddDisabled={
+								subscriptionReadOnly ||
+								subscriptionDetails.subscription_status === SUBSCRIPTION_STATUS.CANCELLED ||
+								subscriptionDetails.subscription_status === SUBSCRIPTION_STATUS.TRIALING
+							}
+						/>
 
 						<SubscriptionEditChargesSection
 							subscriptionId={subscriptionId}

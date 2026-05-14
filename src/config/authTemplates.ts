@@ -1,11 +1,10 @@
 // src/config/authTemplates.ts
 
 export enum AUTH_TEMPLATE {
-	TEMPLATE_1 = 'template_1',
+	FLEXPRICE_DEFAULT = 'flexprice_default',
 	TEMPLATE_2 = 'template_2',
 }
 
-// Moved from branding.ts — re-exported from there for backward compat
 export enum LandingTheme {
 	Light = 'light',
 	Dark = 'dark',
@@ -16,35 +15,24 @@ export enum LandingContentAlign {
 	Center = 'center',
 }
 
-export interface Template1Config {
-	tagline: string | null;
-	supportEmail: string;
-	loginBgImage: string | null;
-	slackCommunityUrl: string | null;
-	showTestimonials: boolean;
-	landingTheme: LandingTheme;
-	landingContentAlign: LandingContentAlign;
-	showLogoOnLanding: boolean;
-}
-
+// Template2 — white-label brands (no supportEmail — that lives in BrandConfig)
 export interface Template2Config {
 	tagline: string | null;
-	supportEmail: string;
 	loginBgImage: string | null;
 	landingBgColor: string | null;
 	showLogoOnLanding: boolean;
 }
 
-// Discriminated union — TypeScript narrows config type from template field, no casts needed
+// FLEXPRICE_DEFAULT has no config — layout is hardcoded in the component
 export type AuthPageConfig =
-	| { template: AUTH_TEMPLATE.TEMPLATE_1; config: Template1Config }
+	| { template: AUTH_TEMPLATE.FLEXPRICE_DEFAULT }
 	| { template: AUTH_TEMPLATE.TEMPLATE_2; config: Template2Config };
 
 export interface RegionOption {
-	key: string; // e.g. "india", "us", "sa"
-	label: string; // e.g. "India", "United States"
-	url: string; // full dashboard URL
-	countryCode: string; // ISO 3166-1 alpha-2, e.g. "IN", "US"
+	key: string;
+	label: string;
+	url: string;
+	countryCode: string;
 }
 
 export interface RegionsConfig {
