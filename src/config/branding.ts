@@ -7,11 +7,12 @@ import {
 	RegionOption,
 	RegionsConfig,
 	Template1Config,
+	Template2Config,
 } from './authTemplates';
 
 // Re-export for backward compat — all existing imports from branding.ts continue to work
 export { AUTH_TEMPLATE, LandingTheme, LandingContentAlign };
-export type { AuthPageConfig, Template1Config, RegionOption, RegionsConfig };
+export type { AuthPageConfig, Template1Config, Template2Config, RegionOption, RegionsConfig };
 
 export enum Locale {
 	En = 'en',
