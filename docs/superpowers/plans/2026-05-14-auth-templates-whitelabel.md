@@ -13,29 +13,35 @@
 ## File Map
 
 ### New files
-| Path | Purpose |
-|------|---------|
-| `src/config/authTemplates.ts` | Auth template enum, Template1Config, Template2Config, discriminated union AuthPageConfig, RegionOption, RegionsConfig |
-| `src/pages/auth/BrandTemplate.tsx` | Dispatches to Template1 or Template2 based on config |
-| `src/pages/auth/templates/Template1/Template1.tsx` | Current two-column layout moved here, receives Template1Config as props |
-| `src/pages/auth/templates/Template1/LandingSection.tsx` | Moved from `src/pages/auth/LandingSection.tsx`, receives Template1Config props |
-| `src/pages/auth/templates/Template2/Template2.tsx` | Two-column layout; right panel = bg color/image, no testimonials |
-| `src/utils/region/flagMap.ts` | countryCode → Radix flag component lookup |
-| `src/store/useLocaleStore.ts` | Zustand persist store for locale + direction |
-| `src/components/molecules/LocaleSelector/LocaleSelector.tsx` | Shared locale picker used on auth page and in-app |
+
+
+| Path                                                         | Purpose                                                                                                               |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `src/config/authTemplates.ts`                                | Auth template enum, Template1Config, Template2Config, discriminated union AuthPageConfig, RegionOption, RegionsConfig |
+| `src/pages/auth/BrandTemplate.tsx`                           | Dispatches to Template1 or Template2 based on config                                                                  |
+| `src/pages/auth/templates/Template1/Template1.tsx`           | Current two-column layout moved here, receives Template1Config as props                                               |
+| `src/pages/auth/templates/Template1/LandingSection.tsx`      | Moved from `src/pages/auth/LandingSection.tsx`, receives Template1Config props                                        |
+| `src/pages/auth/templates/Template2/Template2.tsx`           | Two-column layout; right panel = bg color/image, no testimonials                                                      |
+| `src/utils/region/flagMap.ts`                                | countryCode → Radix flag component lookup                                                                             |
+| `src/store/useLocaleStore.ts`                                | Zustand persist store for locale + direction                                                                          |
+| `src/components/molecules/LocaleSelector/LocaleSelector.tsx` | Shared locale picker used on auth page and in-app                                                                     |
+
 
 ### Modified files
-| Path | What changes |
-|------|-------------|
-| `src/config/branding.ts` | Remove `LandingTheme`/`LandingContentAlign`/`AuthPageConfig` definitions (moved to authTemplates.ts); update `parseAuthPageConfig` to return discriminated union; add `parseRegionsConfig`, `parseAllowedLocales`, `SUPPORTED_LOCALES`; re-export moved types |
-| `src/config/config.ts` | Add `regions: RegionsConfig` and `allowedLocales: Locale[]` to Config; update imports |
-| `src/config/config.brand.test.ts` | Update `parseAuthPageConfig` tests for new discriminated union shape; add `parseRegionsConfig` tests |
-| `src/pages/auth/Auth.tsx` | Remove layout — keep only tab state + auth redirect + `<BrandTemplate />` |
-| `src/pages/auth/LandingSection.tsx` | Delete (moved to templates/Template1/) |
-| `src/utils/region/regionUtils.ts` | Refactor `detectCurrentRegion`/`switchRegion` to use `RegionOption[]` |
-| `src/components/molecules/RegionSelector/RegionSelector.tsx` | Use `config.regions`, `getFlagComponent`; remove hardcoded IN/US imports |
-| `src/store/index.ts` | Export `useLocaleStore` |
-| `src/main.tsx` | Use store locale for `initI18n`; wrap app in `DirectionProvider` |
+
+
+| Path                                                         | What changes                                                                                                                                                                                                                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/config/branding.ts`                                     | Remove `LandingTheme`/`LandingContentAlign`/`AuthPageConfig` definitions (moved to authTemplates.ts); update `parseAuthPageConfig` to return discriminated union; add `parseRegionsConfig`, `parseAllowedLocales`, `SUPPORTED_LOCALES`; re-export moved types |
+| `src/config/config.ts`                                       | Add `regions: RegionsConfig` and `allowedLocales: Locale[]` to Config; update imports                                                                                                                                                                         |
+| `src/config/config.brand.test.ts`                            | Update `parseAuthPageConfig` tests for new discriminated union shape; add `parseRegionsConfig` tests                                                                                                                                                          |
+| `src/pages/auth/Auth.tsx`                                    | Remove layout — keep only tab state + auth redirect + `<BrandTemplate />`                                                                                                                                                                                     |
+| `src/pages/auth/LandingSection.tsx`                          | Delete (moved to templates/Template1/)                                                                                                                                                                                                                        |
+| `src/utils/region/regionUtils.ts`                            | Refactor `detectCurrentRegion`/`switchRegion` to use `RegionOption[]`                                                                                                                                                                                         |
+| `src/components/molecules/RegionSelector/RegionSelector.tsx` | Use `config.regions`, `getFlagComponent`; remove hardcoded IN/US imports                                                                                                                                                                                      |
+| `src/store/index.ts`                                         | Export `useLocaleStore`                                                                                                                                                                                                                                       |
+| `src/main.tsx`                                               | Use store locale for `initI18n`; wrap app in `DirectionProvider`                                                                                                                                                                                              |
+
 
 ---
 
@@ -44,9 +50,9 @@
 ### Task 1: Create `src/config/authTemplates.ts`
 
 **Files:**
-- Create: `src/config/authTemplates.ts`
 
-- [ ] **Step 1: Create the file**
+- Create: `src/config/authTemplates.ts`
+- **Step 1: Create the file**
 
 ```ts
 // src/config/authTemplates.ts
@@ -104,7 +110,7 @@ export interface RegionsConfig {
 }
 ```
 
-- [ ] **Step 2: Commit**
+- **Step 2: Commit**
 
 ```bash
 git add src/config/authTemplates.ts
@@ -116,11 +122,12 @@ git commit -m "feat(config): add auth template type contracts"
 ### Task 2: Update `src/config/branding.ts`
 
 **Files:**
+
 - Modify: `src/config/branding.ts`
 
 This task: remove `LandingTheme`, `LandingContentAlign`, `AuthPageConfig` definitions (they're now in `authTemplates.ts`); re-export them for backward compat; update `parseAuthPageConfig` to return the discriminated union; add `parseRegionsConfig`, `SUPPORTED_LOCALES`, `parseAllowedLocales`.
 
-- [ ] **Step 1: Replace the file content**
+- **Step 1: Replace the file content**
 
 ```ts
 // src/config/branding.ts
@@ -303,7 +310,7 @@ export function initBranding(): void {
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- **Step 2: Verify TypeScript compiles**
 
 ```bash
 npx tsc --noEmit 2>&1 | head -30
@@ -311,7 +318,7 @@ npx tsc --noEmit 2>&1 | head -30
 
 Expected: errors only in files that haven't been updated yet (config.ts, LandingSection.tsx). No errors in branding.ts or authTemplates.ts.
 
-- [ ] **Step 3: Commit**
+- **Step 3: Commit**
 
 ```bash
 git add src/config/branding.ts
@@ -323,10 +330,10 @@ git commit -m "feat(config): update branding parsers for discriminated union aut
 ### Task 3: Update `src/config/config.ts` and tests
 
 **Files:**
+
 - Modify: `src/config/config.ts`
 - Modify: `src/config/config.brand.test.ts`
-
-- [ ] **Step 1: Update `config.ts`**
+- **Step 1: Update `config.ts`**
 
 ```ts
 // src/config/config.ts
@@ -477,7 +484,7 @@ export const config: Config = {
 };
 ```
 
-- [ ] **Step 2: Write failing tests for new parsers**
+- **Step 2: Write failing tests for new parsers**
 
 Add to `src/config/config.brand.test.ts`:
 
@@ -650,7 +657,7 @@ describe('config object', () => {
 });
 ```
 
-- [ ] **Step 3: Run tests — expect all to pass**
+- **Step 3: Run tests — expect all to pass**
 
 ```bash
 npx vitest run src/config/config.brand.test.ts
@@ -658,7 +665,7 @@ npx vitest run src/config/config.brand.test.ts
 
 Expected: all tests pass.
 
-- [ ] **Step 4: Run TypeScript check**
+- **Step 4: Run TypeScript check**
 
 ```bash
 npx tsc --noEmit 2>&1 | grep -v "node_modules" | head -30
@@ -666,7 +673,7 @@ npx tsc --noEmit 2>&1 | grep -v "node_modules" | head -30
 
 Expected: zero errors in Phase 1 files.
 
-- [ ] **Step 5: Commit**
+- **Step 5: Commit**
 
 ```bash
 git add src/config/config.ts src/config/config.brand.test.ts
@@ -680,9 +687,9 @@ git commit -m "feat(config): add regions and allowedLocales to config; update te
 ### Task 4: Create `src/utils/region/flagMap.ts`
 
 **Files:**
-- Create: `src/utils/region/flagMap.ts`
 
-- [ ] **Step 1: Write the failing test**
+- Create: `src/utils/region/flagMap.ts`
+- **Step 1: Write the failing test**
 
 Create `src/utils/region/flagMap.test.ts`:
 
@@ -709,7 +716,7 @@ describe('getFlagComponent', () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- **Step 2: Run test — expect FAIL**
 
 ```bash
 npx vitest run src/utils/region/flagMap.test.ts
@@ -717,7 +724,7 @@ npx vitest run src/utils/region/flagMap.test.ts
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Implement**
+- **Step 3: Implement**
 
 ```ts
 // src/utils/region/flagMap.ts
@@ -731,13 +738,13 @@ export function getFlagComponent(countryCode: string): FlagComponent | null {
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- **Step 4: Run test — expect PASS**
 
 ```bash
 npx vitest run src/utils/region/flagMap.test.ts
 ```
 
-- [ ] **Step 5: Commit**
+- **Step 5: Commit**
 
 ```bash
 git add src/utils/region/flagMap.ts src/utils/region/flagMap.test.ts
@@ -749,9 +756,9 @@ git commit -m "feat(region): add countryCode to flag component lookup"
 ### Task 5: Refactor `src/utils/region/regionUtils.ts`
 
 **Files:**
-- Modify: `src/utils/region/regionUtils.ts`
 
-- [ ] **Step 1: Write failing tests**
+- Modify: `src/utils/region/regionUtils.ts`
+- **Step 1: Write failing tests**
 
 Create `src/utils/region/regionUtils.test.ts`:
 
@@ -790,7 +797,7 @@ describe('detectCurrentRegion', () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- **Step 2: Run test — expect FAIL**
 
 ```bash
 npx vitest run src/utils/region/regionUtils.test.ts
@@ -798,7 +805,7 @@ npx vitest run src/utils/region/regionUtils.test.ts
 
 Expected: FAIL — `detectCurrentRegion` does not accept `RegionOption[]`.
 
-- [ ] **Step 3: Replace `regionUtils.ts`**
+- **Step 3: Replace `regionUtils.ts`**
 
 ```ts
 // src/utils/region/regionUtils.ts
@@ -854,13 +861,13 @@ export const switchRegion = (region: RegionOption): void => {
 };
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- **Step 4: Run test — expect PASS**
 
 ```bash
 npx vitest run src/utils/region/regionUtils.test.ts
 ```
 
-- [ ] **Step 5: Commit**
+- **Step 5: Commit**
 
 ```bash
 git add src/utils/region/regionUtils.ts src/utils/region/regionUtils.test.ts
@@ -872,9 +879,9 @@ git commit -m "feat(region): refactor regionUtils to accept RegionOption[]"
 ### Task 6: Update `RegionSelector`
 
 **Files:**
-- Modify: `src/components/molecules/RegionSelector/RegionSelector.tsx`
 
-- [ ] **Step 1: Replace the file**
+- Modify: `src/components/molecules/RegionSelector/RegionSelector.tsx`
+- **Step 1: Replace the file**
 
 ```tsx
 // src/components/molecules/RegionSelector/RegionSelector.tsx
@@ -957,7 +964,7 @@ const RegionSelector: React.FC = () => {
 export default RegionSelector;
 ```
 
-- [ ] **Step 2: Run TypeScript check**
+- **Step 2: Run TypeScript check**
 
 ```bash
 npx tsc --noEmit 2>&1 | grep -v "node_modules" | head -20
@@ -965,7 +972,7 @@ npx tsc --noEmit 2>&1 | grep -v "node_modules" | head -20
 
 Expected: no errors in RegionSelector or region utils.
 
-- [ ] **Step 3: Commit**
+- **Step 3: Commit**
 
 ```bash
 git add src/components/molecules/RegionSelector/RegionSelector.tsx
@@ -979,9 +986,9 @@ git commit -m "feat(region): migrate RegionSelector to config-driven RegionOptio
 ### Task 7: Create `BrandTemplate.tsx`
 
 **Files:**
-- Create: `src/pages/auth/BrandTemplate.tsx`
 
-- [ ] **Step 1: Create the file**
+- Create: `src/pages/auth/BrandTemplate.tsx`
+- **Step 1: Create the file**
 
 ```tsx
 // src/pages/auth/BrandTemplate.tsx
@@ -1016,7 +1023,7 @@ export default BrandTemplate;
 
 Note: `Template1` and `Template2` don't exist yet — TypeScript will error until Tasks 8–10 are complete.
 
-- [ ] **Step 2: Commit**
+- **Step 2: Commit**
 
 ```bash
 git add src/pages/auth/BrandTemplate.tsx
@@ -1028,10 +1035,10 @@ git commit -m "feat(auth): add BrandTemplate dispatch component"
 ### Task 8: Create `Template1` and move `LandingSection`
 
 **Files:**
+
 - Create: `src/pages/auth/templates/Template1/Template1.tsx`
 - Create: `src/pages/auth/templates/Template1/LandingSection.tsx` (moved from `src/pages/auth/LandingSection.tsx`)
-
-- [ ] **Step 1: Create `templates/Template1/LandingSection.tsx`**
+- **Step 1: Create `templates/Template1/LandingSection.tsx`**
 
 This is the current `LandingSection.tsx` with two changes: receives `Template1Config` as props instead of reading from `config.authPage`, and the asset import path is adjusted for the new location.
 
@@ -1216,7 +1223,7 @@ const LandingSection: React.FC<LandingSectionProps> = ({ config }) => {
 export default LandingSection;
 ```
 
-- [ ] **Step 2: Create `templates/Template1/Template1.tsx`**
+- **Step 2: Create `templates/Template1/Template1.tsx`**
 
 ```tsx
 // src/pages/auth/templates/Template1/Template1.tsx
@@ -1324,7 +1331,7 @@ export default Template1;
 
 Note: `LocaleSelector` doesn't exist yet — it's created in Task 14. TypeScript will error until then.
 
-- [ ] **Step 3: Commit**
+- **Step 3: Commit**
 
 ```bash
 git add src/pages/auth/templates/
@@ -1336,9 +1343,9 @@ git commit -m "feat(auth): add Template1 components (LandingSection moved + rece
 ### Task 9: Create `Template2`
 
 **Files:**
-- Create: `src/pages/auth/templates/Template2/Template2.tsx`
 
-- [ ] **Step 1: Create the file**
+- Create: `src/pages/auth/templates/Template2/Template2.tsx`
+- **Step 1: Create the file**
 
 ```tsx
 // src/pages/auth/templates/Template2/Template2.tsx
@@ -1443,7 +1450,7 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 export default Template2;
 ```
 
-- [ ] **Step 2: Commit**
+- **Step 2: Commit**
 
 ```bash
 git add src/pages/auth/templates/Template2/Template2.tsx
@@ -1455,10 +1462,10 @@ git commit -m "feat(auth): add Template2 component"
 ### Task 10: Slim down `Auth.tsx` and delete old `LandingSection.tsx`
 
 **Files:**
+
 - Modify: `src/pages/auth/Auth.tsx`
 - Delete: `src/pages/auth/LandingSection.tsx`
-
-- [ ] **Step 1: Replace `Auth.tsx`**
+- **Step 1: Replace `Auth.tsx`**
 
 ```tsx
 // src/pages/auth/Auth.tsx
@@ -1503,13 +1510,13 @@ const AuthPage: React.FC = () => {
 export default AuthPage;
 ```
 
-- [ ] **Step 2: Delete the old LandingSection**
+- **Step 2: Delete the old LandingSection**
 
 ```bash
 rm src/pages/auth/LandingSection.tsx
 ```
 
-- [ ] **Step 3: Run TypeScript check**
+- **Step 3: Run TypeScript check**
 
 ```bash
 npx tsc --noEmit 2>&1 | grep -v "node_modules" | head -30
@@ -1517,7 +1524,7 @@ npx tsc --noEmit 2>&1 | grep -v "node_modules" | head -30
 
 Expected: errors only for `LocaleSelector` (not yet created). No other errors.
 
-- [ ] **Step 4: Commit**
+- **Step 4: Commit**
 
 ```bash
 git add src/pages/auth/Auth.tsx
@@ -1532,10 +1539,10 @@ git commit -m "feat(auth): slim Auth.tsx to tab state only; render via BrandTemp
 ### Task 11: Create `useLocaleStore`
 
 **Files:**
+
 - Create: `src/store/useLocaleStore.ts`
 - Modify: `src/store/index.ts`
-
-- [ ] **Step 1: Write failing test**
+- **Step 1: Write failing test**
 
 Create `src/store/useLocaleStore.test.ts`:
 
@@ -1594,7 +1601,7 @@ describe('useLocaleStore', () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- **Step 2: Run test — expect FAIL**
 
 ```bash
 npx vitest run src/store/useLocaleStore.test.ts
@@ -1602,7 +1609,7 @@ npx vitest run src/store/useLocaleStore.test.ts
 
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Create `useLocaleStore.ts`**
+- **Step 3: Create `useLocaleStore.ts`**
 
 ```ts
 // src/store/useLocaleStore.ts
@@ -1653,7 +1660,7 @@ export const useLocaleStore = create<LocaleState>()(
 );
 ```
 
-- [ ] **Step 4: Update `src/store/index.ts`**
+- **Step 4: Update `src/store/index.ts`**
 
 ```ts
 export { useApiDocsStore } from './useApiDocsStore';
@@ -1661,13 +1668,13 @@ export { useBreadcrumbsStore } from './useBreadcrumbsStore';
 export { useLocaleStore } from './useLocaleStore';
 ```
 
-- [ ] **Step 5: Run test — expect PASS**
+- **Step 5: Run test — expect PASS**
 
 ```bash
 npx vitest run src/store/useLocaleStore.test.ts
 ```
 
-- [ ] **Step 6: Commit**
+- **Step 6: Commit**
 
 ```bash
 git add src/store/useLocaleStore.ts src/store/useLocaleStore.test.ts src/store/index.ts
@@ -1679,16 +1686,16 @@ git commit -m "feat(locale): add Zustand persist locale store"
 ### Task 12: Install `@radix-ui/react-direction` and wire `main.tsx`
 
 **Files:**
+
 - Modify: `package.json` (via npm install)
 - Modify: `src/main.tsx`
-
-- [ ] **Step 1: Install the package**
+- **Step 1: Install the package**
 
 ```bash
 npm install @radix-ui/react-direction
 ```
 
-- [ ] **Step 2: Update `main.tsx`**
+- **Step 2: Update `main.tsx`**
 
 ```tsx
 // src/main.tsx
@@ -1747,7 +1754,7 @@ function DirectionWrapper({ children }: { children: React.ReactNode }) {
 })();
 ```
 
-- [ ] **Step 3: Run TypeScript check**
+- **Step 3: Run TypeScript check**
 
 ```bash
 npx tsc --noEmit 2>&1 | grep -v "node_modules" | head -20
@@ -1755,7 +1762,7 @@ npx tsc --noEmit 2>&1 | grep -v "node_modules" | head -20
 
 Expected: no errors in main.tsx. Only remaining error should be `LocaleSelector` not found.
 
-- [ ] **Step 4: Commit**
+- **Step 4: Commit**
 
 ```bash
 git add src/main.tsx package.json package-lock.json
@@ -1767,9 +1774,9 @@ git commit -m "feat(locale): wire DirectionProvider from @radix-ui/react-directi
 ### Task 13: Create `LocaleSelector` component
 
 **Files:**
-- Create: `src/components/molecules/LocaleSelector/LocaleSelector.tsx`
 
-- [ ] **Step 1: Create the file**
+- Create: `src/components/molecules/LocaleSelector/LocaleSelector.tsx`
+- **Step 1: Create the file**
 
 ```tsx
 // src/components/molecules/LocaleSelector/LocaleSelector.tsx
@@ -1813,7 +1820,7 @@ const LocaleSelector: React.FC = () => {
 export default LocaleSelector;
 ```
 
-- [ ] **Step 2: Run full TypeScript check**
+- **Step 2: Run full TypeScript check**
 
 ```bash
 npx tsc --noEmit 2>&1 | grep -v "node_modules"
@@ -1821,7 +1828,7 @@ npx tsc --noEmit 2>&1 | grep -v "node_modules"
 
 Expected: zero errors.
 
-- [ ] **Step 3: Run all tests**
+- **Step 3: Run all tests**
 
 ```bash
 npx vitest run
@@ -1829,7 +1836,7 @@ npx vitest run
 
 Expected: all tests pass.
 
-- [ ] **Step 4: Commit**
+- **Step 4: Commit**
 
 ```bash
 git add src/components/molecules/LocaleSelector/LocaleSelector.tsx
@@ -1840,19 +1847,20 @@ git commit -m "feat(locale): add LocaleSelector component"
 
 ## Final verification
 
-- [ ] **Start dev server and verify auth page renders correctly**
+- **Start dev server and verify auth page renders correctly**
 
 ```bash
 npm run dev
 ```
 
 Open `http://localhost:3000/auth`. Verify:
+
 1. Login page renders (Template 1 — two columns, testimonials on right)
 2. No console errors
 3. Locale selector appears at bottom-left of form column
 4. Region selector hidden (no URLs configured locally)
 
-- [ ] **Run full test suite one final time**
+- **Run full test suite one final time**
 
 ```bash
 npx vitest run
@@ -1860,9 +1868,10 @@ npx vitest run
 
 Expected: all tests pass.
 
-- [ ] **Final commit**
+- **Final commit**
 
 ```bash
 git add -A
 git commit -m "feat(auth): complete auth template + region + locale systems"
 ```
+

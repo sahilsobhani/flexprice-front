@@ -20,7 +20,7 @@ interface Template1Props {
 
 const Template1: React.FC<Template1Props> = ({ config, currentTab, switchTab }) => {
 	const { t } = useTranslation('auth');
-	const { logo, name } = useBrand();
+	const { logo } = useBrand();
 
 	const renderForm = () => {
 		switch (currentTab) {
