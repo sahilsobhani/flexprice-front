@@ -33,21 +33,13 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 		}
 	};
 
-	const leftPanelStyle: React.CSSProperties = config.loginBgImage
+	const rightPanelStyle: React.CSSProperties = config.loginBgImage
 		? { backgroundImage: `url(${config.loginBgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
 		: { backgroundColor: '#0f0f0f' };
 
 	return (
 		<div className='flex w-full min-h-screen bg-white page !p-0 !flex-row'>
-			{/* Left — background image with centered logo + tagline */}
-			<div className='w-[55%] min-h-screen relative' style={leftPanelStyle}>
-				<div className='absolute inset-0 flex flex-col items-center justify-center gap-6 px-12'>
-					<img src={config.landingLogo ?? logo} alt={name} className='max-h-16 object-contain' />
-					{config.tagline && <p className='text-2xl font-medium text-white text-center leading-snug max-w-xs'>{config.tagline}</p>}
-				</div>
-			</div>
-
-			{/* Right — login form */}
+			{/* Left — login form */}
 			<div className='w-[45%] flex flex-col'>
 				<div className='flex-1 flex justify-center items-center'>
 					<div className='flex flex-col justify-center max-w-xl w-[65%] mx-auto'>
@@ -89,6 +81,14 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 							<LocaleSelector />
 						</div>
 					</div>
+				</div>
+			</div>
+
+			{/* Right — background image, logo top-left, tagline bottom-left */}
+			<div className='w-[55%] min-h-screen relative' style={rightPanelStyle}>
+				<div className='absolute inset-0 flex flex-col justify-between p-10'>
+					<img src={config.landingLogo ?? logo} alt={name} className='max-h-12 object-contain object-left' />
+					{config.tagline && <p className='text-3xl font-bold text-white leading-tight max-w-xs'>{config.tagline}</p>}
 				</div>
 			</div>
 		</div>
