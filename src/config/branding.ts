@@ -41,7 +41,11 @@ export interface I18nConfig {
 
 export const SUPPORTED_LOCALES: Locale[] = [Locale.En, Locale.Ar];
 
-const RTL_LOCALES = new Set<Locale>([Locale.Ar, Locale.He, Locale.Fa, Locale.Ur]);
+export const RTL_LOCALES = new Set<Locale>([Locale.Ar, Locale.He, Locale.Fa, Locale.Ur]);
+
+export function deriveDirection(locale: Locale): Direction {
+	return RTL_LOCALES.has(locale) ? Direction.RTL : Direction.LTR;
+}
 
 const DEFAULT_SLACK_URL = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ';
 
@@ -117,10 +121,18 @@ export function parseRegionsConfig(): RegionsConfig {
 	try {
 		const raw = JSON.parse(import.meta.env.VITE_AUTH_CONFIG ?? '{}');
 		if (Array.isArray(raw.regions?.regions) && raw.regions.regions.length > 0) {
-			return {
-				enabled: raw.regions.enabled ?? true,
-				regions: raw.regions.regions as RegionOption[],
-			};
+			const validRegions: RegionOption[] = raw.regions.regions.filter(
+				(r: unknown): r is RegionOption =>
+					typeof r === 'object' &&
+					r !== null &&
+					typeof (r as RegionOption).key === 'string' &&
+					typeof (r as RegionOption).label === 'string' &&
+					typeof (r as RegionOption).url === 'string' &&
+					typeof (r as RegionOption).countryCode === 'string',
+			);
+			if (validRegions.length > 0) {
+				return { enabled: raw.regions.enabled ?? true, regions: validRegions };
+			}
 		}
 	} catch {
 		// fall through to legacy
@@ -158,7 +170,7 @@ export function parseAllowedLocales(): Locale[] {
 export function parseI18nConfig(): I18nConfig {
 	const rawLocale = import.meta.env.VITE_DEFAULT_LOCALE ?? Locale.En;
 	const locale = (Object.values(Locale) as string[]).includes(rawLocale) ? (rawLocale as Locale) : Locale.En;
-	return { locale, direction: RTL_LOCALES.has(locale) ? Direction.RTL : Direction.LTR };
+	return { locale, direction: deriveDirection(locale) };
 }
 
 export const brandConfig: BrandConfig = parseBrandConfig();

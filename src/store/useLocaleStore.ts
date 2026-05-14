@@ -1,15 +1,9 @@
 // src/store/useLocaleStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Locale, Direction } from '@/config/branding';
+import { Locale, Direction, deriveDirection } from '@/config/branding';
 import { config } from '@/config/config';
 import i18n from 'i18next';
-
-const RTL_LOCALES = new Set<Locale>([Locale.Ar, Locale.He, Locale.Fa, Locale.Ur]);
-
-function deriveDirection(locale: Locale): Direction {
-	return RTL_LOCALES.has(locale) ? Direction.RTL : Direction.LTR;
-}
 
 interface LocaleState {
 	locale: Locale;
