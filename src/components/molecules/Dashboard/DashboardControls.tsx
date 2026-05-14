@@ -1,6 +1,7 @@
 'use client';
 
 import { Select } from '@/components/atoms';
+import { useTranslation } from 'react-i18next';
 import { WindowSize } from '@/models';
 import { TIME_PERIOD } from '@/constants/constants';
 import { getTypographyClass } from '@/lib/typography';
@@ -33,11 +34,12 @@ interface DashboardControlsProps {
 }
 
 export const DashboardControls: React.FC<DashboardControlsProps> = ({ timePeriod, windowSize, onTimePeriodChange, onWindowSizeChange }) => {
+	const { t } = useTranslation('common');
 	return (
 		<div className='flex flex-col sm:flex-row gap-4 sm:justify-end mb-6'>
 			<div className='flex flex-col sm:flex-row gap-4'>
 				<div className='flex flex-col gap-2'>
-					<label className={getTypographyClass('label-small', 'font-medium text-zinc-600')}>Time Period</label>
+					<label className={getTypographyClass('label-small', 'font-medium text-zinc-600')}>{t('labels.timePeriod')}</label>
 					<Select
 						value={timePeriod}
 						options={timePeriodOptions}
@@ -46,7 +48,7 @@ export const DashboardControls: React.FC<DashboardControlsProps> = ({ timePeriod
 					/>
 				</div>
 				<div className='flex flex-col gap-2'>
-					<label className={getTypographyClass('label-small', 'font-medium text-zinc-600')}>Window Size</label>
+					<label className={getTypographyClass('label-small', 'font-medium text-zinc-600')}>{t('labels.windowSize')}</label>
 					<Select
 						value={windowSize}
 						options={windowSizeOptions}

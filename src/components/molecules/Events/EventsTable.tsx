@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import FlexpriceTable, { ColumnData, TooltipCell } from '../Table';
 import { formatDateWithMilliseconds } from '@/utils/common/format_date';
 import EventPropertiesDrawer from './EventPropertiesDrawer';
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const EventsTable: FC<Props> = ({ data }) => {
+	const { t } = useTranslation('common');
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -22,7 +24,7 @@ const EventsTable: FC<Props> = ({ data }) => {
 		{
 			title: 'Events name',
 			render(rowData) {
-				return <span>{rowData.event_name || '--'}</span>;
+				return <span>{rowData.event_name || t('labels.na')}</span>;
 			},
 		},
 		{
@@ -32,7 +34,7 @@ const EventsTable: FC<Props> = ({ data }) => {
 		{
 			title: 'Source',
 			render(rowData) {
-				return <span>{rowData.source || '--'}</span>;
+				return <span>{rowData.source || t('labels.na')}</span>;
 			},
 		},
 		{

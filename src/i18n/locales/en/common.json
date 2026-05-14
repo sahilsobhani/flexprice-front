@@ -169,7 +169,20 @@
 		"idempotencyKey": "Idempotency key",
 		"payments": "Payments",
 		"tabs": "Tabs",
-		"documentation": "Documentation"
+		"documentation": "Documentation",
+		"customerDetails": "Customer Details",
+		"loadingCustomerDetails": "Loading customer details...",
+		"timePeriod": "Time Period",
+		"windowSize": "Window Size",
+		"apiReference": "API Reference",
+		"noDocumentationFound": "No documentation found",
+		"dataRegion": "Data region",
+		"selectARegion": "Select a region",
+		"createPlan": "Create Plan",
+		"companyLogo": "company logo",
+		"addCoupon": "Add Coupon",
+		"describeYourPricing": "Describe your Pricing. Let AI Build It.",
+		"label": "label"
 	},
 	"nav": {
 		"home": "Home",

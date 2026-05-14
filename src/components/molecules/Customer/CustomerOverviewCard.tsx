@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button, FormHeader, Spacer } from '@/components/atoms';
 import CustomerApi from '@/api/CustomerApi';
 import { useQuery } from '@tanstack/react-query';
@@ -15,6 +16,7 @@ interface CustomerCardProps {
 }
 
 const CustomerOverviewCard: React.FC<CustomerCardProps> = ({ customerId }) => {
+	const { t } = useTranslation('common');
 	const { data: customer, isLoading } = useQuery({
 		queryKey: ['fetchCustomerDetails', customerId],
 		queryFn: () => fetchCustomer(customerId),
@@ -86,7 +88,7 @@ const CustomerOverviewCard: React.FC<CustomerCardProps> = ({ customerId }) => {
 	if (isLoading) {
 		return (
 			<div className='py-6 px-4 rounded-xl border border-gray-300'>
-				<p className='text-gray-600'>Loading customer details...</p>
+				<p className='text-gray-600'>{t('labels.loadingCustomerDetails')}</p>
 			</div>
 		);
 	}
@@ -98,7 +100,7 @@ const CustomerOverviewCard: React.FC<CustomerCardProps> = ({ customerId }) => {
 					<Spacer className='!h-4' />
 					<DetailsCard data={billingDetails} childrenAtTop cardStyle='default' variant='stacked' gridCols={4}>
 						<div className='flex justify-between items-center mb-4'>
-							<FormHeader title='Customer Details' variant='sub-header' />
+							<FormHeader title={t('labels.customerDetails')} variant='sub-header' />
 							<CreateCustomerDrawer
 								trigger={
 									<Button className='flex gap-2 mx-0 px-2' variant={'outline'}>
