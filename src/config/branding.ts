@@ -127,6 +127,9 @@ export function parseRegionsConfig(): RegionsConfig {
 	}
 
 	// Backward-compat: build RegionOption[] from old env vars
+	if (import.meta.env.VITE_DATA_REGION_SELECTION_ENABLED !== 'true') {
+		return { enabled: false, regions: [] };
+	}
 	const regions: RegionOption[] = [];
 	if (import.meta.env.VITE_DASHBOARD_URL_INDIA) {
 		regions.push({ key: 'india', label: 'India', url: import.meta.env.VITE_DASHBOARD_URL_INDIA, countryCode: 'IN' });
@@ -135,7 +138,7 @@ export function parseRegionsConfig(): RegionsConfig {
 		regions.push({ key: 'us', label: 'United States', url: import.meta.env.VITE_DASHBOARD_URL_US, countryCode: 'US' });
 	}
 	return {
-		enabled: import.meta.env.VITE_DATA_REGION_SELECTION_ENABLED === 'true' && regions.length > 0,
+		enabled: regions.length > 0,
 		regions,
 	};
 }

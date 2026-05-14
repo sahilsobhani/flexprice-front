@@ -1,4 +1,17 @@
-import { BrandConfig, AuthPageConfig, I18nConfig, brandConfig, authPageConfig, i18nConfig } from './branding';
+// src/config/config.ts
+import {
+	BrandConfig,
+	AuthPageConfig,
+	I18nConfig,
+	brandConfig,
+	authPageConfig,
+	i18nConfig,
+	regionsConfig,
+	allowedLocalesConfig,
+	Locale,
+} from './branding';
+import { RegionsConfig } from './authTemplates';
+
 export type { BrandConfig, AuthPageConfig, I18nConfig };
 
 export enum APP_ENV {
@@ -69,11 +82,12 @@ export interface Config {
 	brand: BrandConfig;
 	authPage: AuthPageConfig;
 	i18n: I18nConfig;
+	regions: RegionsConfig;
+	allowedLocales: Locale[];
 }
 
 function parseAppEnv(): APP_ENV {
 	const raw = import.meta.env.VITE_APP_ENV ?? import.meta.env.VITE_APP_ENVIRONMENT ?? import.meta.env.VITE_ENVIRONMENT;
-
 	if (!raw) return APP_ENV.Local;
 	if (raw === 'prod') return APP_ENV.Production;
 	if (raw === 'dev') return APP_ENV.Development;
@@ -127,4 +141,6 @@ export const config: Config = {
 	brand: brandConfig,
 	authPage: authPageConfig,
 	i18n: i18nConfig,
+	regions: regionsConfig,
+	allowedLocales: allowedLocalesConfig,
 };
