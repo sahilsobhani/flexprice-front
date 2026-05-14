@@ -6,9 +6,13 @@ import { RouteNames } from '@/core/routes/Routes';
 import { EnvironmentSelector } from '@/components/molecules';
 import { Settings, Landmark, Layers2, CodeXml, Puzzle, GalleryHorizontalEnd, Home, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLocaleStore } from '@/store/useLocaleStore';
+import { Direction } from '@/config/branding';
 
 const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }) => {
 	const { open: sidebarOpen } = useSidebar();
+	const direction = useLocaleStore((s) => s.direction);
+	const side = direction === Direction.RTL ? 'right' : 'left';
 	const navMain: NavItem[] = [
 		{
 			title: 'Home',
@@ -143,8 +147,13 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 	return (
 		<Sidebar
 			collapsible='icon'
+			side={side}
 			{...props}
-			className={cn('border-r-[1.5px] border-gray-300 py-1 bg-[#f9f9f9]', sidebarOpen ? 'px-3' : 'px-2')}>
+			className={cn(
+				'border-gray-300 py-1 bg-[#f9f9f9]',
+				sidebarOpen ? 'px-3' : 'px-2',
+				side === 'right' ? 'border-l-[1.5px]' : 'border-r-[1.5px]',
+			)}>
 			<SidebarHeader>
 				<EnvironmentSelector />
 			</SidebarHeader>
