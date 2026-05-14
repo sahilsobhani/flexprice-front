@@ -85,11 +85,11 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 			</div>
 
 			{/* Right — background image, logo + tagline grouped & centered-left (always LTR) */}
-			<div className='w-[55%] min-h-screen relative' style={rightPanelStyle} dir='ltr'>
+			<div className='w-[55%] min-h-screen relative' style={rightPanelStyle}>
 				<div className='absolute inset-0 flex flex-col justify-center items-start px-14'>
 					<img src={config.landingLogo ?? logo} alt={name} className='max-h-14 object-contain object-left mb-6' />
 					{config.tagline && (
-						<p className='text-4xl font-bold text-white leading-tight text-left' style={{ maxWidth: '22rem' }}>
+						<p className='text-6xl font-medium text-white leading-tight' style={{ maxWidth: '36rem' }}>
 							{config.tagline}
 						</p>
 					)}
