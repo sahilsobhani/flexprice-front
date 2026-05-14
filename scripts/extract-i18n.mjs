@@ -176,12 +176,12 @@ for (const result of allFiles) {
 		const raw = msg.message.replace(/^disallow literal string:\s*/i, '').trim();
 
 		// Strip leading JSX prop name + quote (e.g. title='Service Accounts → Service Accounts)
-		const cleaned = raw.replace(/^[a-zA-Z_$][a-zA-Z0-9_$]*=['"]/, '');
+		const cleaned = raw.replace(/^[a-zA-Z_$][a-zA-Z0-9_$-]*=['"]/, '');
 		// Strip leading/trailing standalone quotes and trim
 		const cleaned2 = cleaned.replace(/^['"]/, '').replace(/['"]$/, '').trim();
 
 		// Skip JSX element/expression blobs (rule reports parent node source, not just the literal)
-		if (/^[<{]/.test(cleaned2)) continue;
+		if (/^[<{[]/.test(cleaned2)) continue;
 		if (cleaned2.includes('<') || cleaned2.includes('>')) continue;
 
 		// Skip if too short, whitespace-only, or a code identifier
