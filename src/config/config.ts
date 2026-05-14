@@ -68,7 +68,7 @@ interface RestrictionsConfig {
 	rawEnvs: string;
 }
 
-/** UI fonts: primary + fallback → `fontFamily` (see `VITE_FONT_CONFIG`, `initTypography()`). */
+/** Primary defaults to **Qanelas** (`@font-face` in `src/assets/fonts/qanelas/`, imported from `src/index.css`). Override via `VITE_FONT_CONFIG`. */
 export interface TypographyConfig {
 	primaryFont: string;
 	fallbackFont: string;
@@ -76,7 +76,7 @@ export interface TypographyConfig {
 	fontFamily: string;
 }
 
-const DEFAULT_FONT_PRIMARY = 'Inter';
+const DEFAULT_FONT_PRIMARY = 'Qanelas';
 const DEFAULT_FONT_FALLBACK = 'ui-sans-serif, system-ui, sans-serif';
 
 /** Wrap family name in quotes when needed for valid CSS `font-family`. */
