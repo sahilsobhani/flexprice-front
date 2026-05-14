@@ -173,29 +173,34 @@ for (const result of allFiles) {
 		if (msg.ruleId !== 'i18next/no-literal-string') continue;
 
 		// ESLint message format: "disallow literal string: <content>"
-		const raw = msg.message.replace(/^disallow literal string:\s*/i, '').replace(/^['"]|['"]$/g, '').trim();
+		const raw = msg.message.replace(/^disallow literal string:\s*/i, '').trim();
+
+		// Strip leading JSX prop name + quote (e.g. title='Service Accounts → Service Accounts)
+		const cleaned = raw.replace(/^[a-zA-Z_$][a-zA-Z0-9_$]*=['"]/, '');
+		// Strip leading/trailing standalone quotes and trim
+		const cleaned2 = cleaned.replace(/^['"]/, '').replace(/['"]$/, '').trim();
 
 		// Skip JSX element/expression blobs (rule reports parent node source, not just the literal)
-		if (/^[<{]/.test(raw)) continue;
-		if (raw.includes('<') || raw.includes('>')) continue;
+		if (/^[<{]/.test(cleaned2)) continue;
+		if (cleaned2.includes('<') || cleaned2.includes('>')) continue;
 
 		// Skip if too short, whitespace-only, or a code identifier
-		if (!raw || raw.length < 2 || /^[a-z][a-z0-9_-]*$/.test(raw)) continue;
+		if (!cleaned2 || cleaned2.length < 2 || /^[a-z][a-z0-9_-]*$/.test(cleaned2)) continue;
 		// Skip URLs, hex colours, single chars
-		if (/^https?:\/\//.test(raw) || /^#[a-fA-F0-9]{3,8}$/.test(raw) || raw.length === 1) continue;
+		if (/^https?:\/\//.test(cleaned2) || /^#[a-fA-F0-9]{3,8}$/.test(cleaned2) || cleaned2.length === 1) continue;
 
-		if (!keyMap[raw]) {
-			const keySegment = toKeySegment(raw);
+		if (!keyMap[cleaned2]) {
+			const keySegment = toKeySegment(cleaned2);
 			if (!keySegment) continue; // pure symbols/punctuation produce empty segment
 
 			const fullKey = `${section}.${keySegment}`;
-			keyMap[raw] = fullKey;
+			keyMap[cleaned2] = fullKey;
 
 			if (!draftJson[section]) draftJson[section] = {};
 			if (draftJson[section][keySegment] === undefined) {
-				draftJson[section][keySegment] = raw;
-			} else if (draftJson[section][keySegment] !== raw) {
-				console.warn(`  ⚠ Key collision: "${raw}" maps to "${section}.${keySegment}" (already has "${draftJson[section][keySegment]}")`);
+				draftJson[section][keySegment] = cleaned2;
+			} else if (draftJson[section][keySegment] !== cleaned2) {
+				console.warn(`  ⚠ Key collision: "${cleaned2}" maps to "${section}.${keySegment}" (already has "${draftJson[section][keySegment]}")`);
 			}
 		}
 
@@ -203,8 +208,8 @@ for (const result of allFiles) {
 			file: relPath,
 			line: msg.line,
 			col: msg.column,
-			originalString: raw,
-			suggestedKey: keyMap[raw],
+			originalString: cleaned2,
+			suggestedKey: keyMap[cleaned2],
 			namespace,
 		});
 	}

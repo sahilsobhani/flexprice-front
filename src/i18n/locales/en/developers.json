@@ -1,39 +1,37 @@
 {
   "service": {
-    "titleServiceAccounts": "title='Service Accounts",
-    "titleCreateServiceAccount": "title='Create Service Account",
-    "descriptionCreateANewService": "description='Create a new service account with specific roles for automated services"
+    "serviceAccounts": "Service Accounts",
+    "createServiceAccount": "Create Service Account",
+    "createANewServiceAccount": "Create a new service account with specific roles for automated services"
   },
   "workflow": {
-    "titleSummary": "title='Summary",
-    "titleActivities": "title='Activities"
+    "summary": "Summary",
+    "activities": "Activities"
   },
   "developer": {
-    "titleApiKeys": "title='API Keys"
+    "apiKeys": "API Keys"
   },
   "event": {
     "showprocessedonlyProcessedEventsEventDetails": "showProcessedOnly ? 'Processed Events' : 'Event Details",
-    "titleEventDetails": "title='Event Details",
-    "titleIngested": "title='Ingested",
-    "titleResponse": "title='Response",
-    "titleAttributedToCustomer": "title='Attributed to Customer",
-    "labelKey": "label='Key",
-    "placeholderKey": "placeholder='key",
-    "labelValues": "label='Values",
-    "placeholderValue": "placeholder='value"
+    "eventDetails": "Event Details",
+    "ingested": "Ingested",
+    "response": "Response",
+    "attributedToCustomer": "Attributed to Customer",
+    "key": "Key",
+    "values": "Values"
   },
   "events": {
     "rowdataEventName": "rowData.event_name || '--",
     "rowdataSource": "rowData.source || '--"
   },
   "secret": {
-    "titleCreateApiKey": "title='Create API Key",
-    "descriptionCreateANewApi": "description='Create a new API key to access the Flexprice API",
-    "placeholderSecretKey": "placeholder='Secret Key",
-    "labelName": "label='Name",
-    "labelAccountType": "label='Account Type",
-    "labelMappedToIdentity": "label='Mapped to Identity",
-    "placeholderSelectAServiceAccount": "placeholder='Select a service account",
-    "labelExpiration": "label='Expiration"
+    "createApiKey": "Create API Key",
+    "createANewApiKey": "Create a new API key to access the Flexprice API",
+    "secretKey": "Secret Key",
+    "name": "Name",
+    "accountType": "Account Type",
+    "mappedToIdentity": "Mapped to Identity",
+    "selectAServiceAccount": "Select a service account",
+    "expiration": "Expiration"
   }
 }
