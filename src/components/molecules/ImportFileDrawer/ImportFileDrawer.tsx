@@ -1,5 +1,6 @@
 import { Button, Chip, FormHeader, Select, SelectOption, Sheet, Spacer } from '@/components/atoms';
 import { FC, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CSVBoxButton } from '@csvbox/react';
 import { cn } from '@/lib/utils';
 import { CircleAlert, Download, LoaderCircleIcon, RefreshCcw, X } from 'lucide-react';
@@ -101,6 +102,7 @@ const getTaskStatusChips = (status: string) => {
 };
 
 const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
+	const { t } = useTranslation('common');
 	const importTypeOptions: SelectOption[] = [
 		{
 			label: 'Events',
@@ -275,22 +277,18 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 
 	return (
 		<div>
-			<Sheet
-				isOpen={isOpen}
-				onOpenChange={onOpenChange}
-				title={'Import File'}
-				description={'Easily upload and manage your bulk data imports.'}>
+			<Sheet isOpen={isOpen} onOpenChange={onOpenChange} title={t('labels.importFile')} description={t('labels.importFileDescription')}>
 				<div className='mt-6'>
 					{!uploadedTaskDetails && (
 						<Select
 							error={errors.entity_type}
 							options={importTypeOptions}
 							value={entityType?.value}
-							label='Import Type'
+							label={t('labels.importType')}
 							onChange={(value) => {
 								setEntityType(importTypeOptions.find((option) => option.value === value));
 							}}
-							description='Select the type of data you want to import'
+							description={t('labels.selectImportType')}
 						/>
 					)}
 					<Spacer height={12} />
@@ -301,7 +299,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 								'focus-within:border-black',
 								'mb-4',
 							)}>
-							{uploadedTaskDetails?.file_name || '--'}
+							{uploadedTaskDetails?.file_name || t('labels.na')}
 							<button
 								onClick={() => {
 									setuploadedTaskDetails(undefined);
@@ -374,11 +372,11 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 										</div>
 										<div className='flex flex-col justify-start items-start'>
 											<FormHeader
-												title='Compare your file formatting'
+												title={t('labels.compareFileFormatting')}
 												variant='form-component-title'
 												className='mb-0'
 												titleClassName='mb-0'
-												subtitle='Max file size: 5 MB. Only .csv format is accepted.'
+												subtitle={t('labels.maxFileSizeSubtitle')}
 											/>
 											<Button
 												className='flex gap-2 !p-0 m-0 underline'
@@ -386,7 +384,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 												onClick={() => {
 													window.open(getSampleFileUrl(entityType?.value || ''), '_blank');
 												}}>
-												Sample CSV
+												{t('labels.sampleCsv')}
 												<Download className='size-4 underline' />
 											</Button>
 										</div>
@@ -399,7 +397,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 					<div>
 						{uploadedTaskDetails && (
 							<div>
-								<FormHeader title='Import Details' variant='form-component-title' />
+								<FormHeader title={t('labels.importDetails')} variant='form-component-title' />
 
 								<div className='space-y-4 mt-4'>
 									{importDetails.map((detail, index) => (
@@ -434,7 +432,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 									) : (
 										<>
 											<RefreshCcw />
-											Refresh
+											{t('actions.refresh')}
 										</>
 									)}
 								</Button>
@@ -447,7 +445,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 									onOpenChange(false);
 								}}
 								className='flex gap-2 items-center'>
-								Done
+								{t('actions.done')}
 							</Button>
 						)}
 
@@ -459,7 +457,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 									}}
 									variant={'outline'}
 									className='flex gap-2 items-center'>
-									Download CSV
+									{t('labels.downloadCsv')}
 								</Button>
 								<Button
 									onClick={() => {
@@ -473,7 +471,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 										}
 									}}
 									className='flex gap-2 items-center'>
-									Try Again
+									{t('labels.tryAgain')}
 								</Button>
 							</div>
 						)}
@@ -491,7 +489,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 							onClick={() => {
 								handleImport();
 							}}>
-							{isPending ? <LoaderCircleIcon className='size-4 animate-spin' /> : 'Import Data'}
+							{isPending ? <LoaderCircleIcon className='size-4 animate-spin' /> : t('labels.importData')}
 						</Button>
 					)}
 				</div>
