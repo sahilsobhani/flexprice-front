@@ -221,12 +221,7 @@ const CreateInvoicePage: FC = () => {
 							<p className='text-[#71717A] text-sm'>Currency</p>
 						</div>
 						<div className='w-full grid grid-cols-3 gap-4'>
-							<DateTimePicker
-								title='Issue Date'
-								date={issueDate}
-								setDate={setIssueDate}
-								placeholder='Select issue date'
-							/>
+							<DateTimePicker title='Issue Date' date={issueDate} setDate={setIssueDate} placeholder='Select issue date' />
 							<p></p>
 							<Select value={currency} options={currencyOptions} onChange={setCurrency} />
 						</div>
@@ -254,41 +249,51 @@ const CreateInvoicePage: FC = () => {
 
 					<div className='p-4'>
 						<FormHeader title='Order Details' variant='sub-header' titleClassName='font-semibold' />
-						<div className='mt-6'>
+						<div className='mt-6 min-w-0'>
 							{lineItems.map((item, index) => (
-								<div key={index} className='flex gap-4 mb-4 items-end'>
-									<Input
-										label={index === 0 ? 'Item Name' : ''}
-										value={item.display_name}
-										onChange={(value) => handleLineItemChange(index, 'display_name', value)}
-										placeholder='Enter item name'
-									/>
-									<Input
-										label={index === 0 ? 'Quantity' : ''}
-										value={item.quantity}
-										onChange={(value) => handleLineItemChange(index, 'quantity', value)}
-										variant='integer'
-										placeholder='1'
-									/>
-									<Input
-										label={index === 0 ? 'Amount' : ''}
-										value={item.amount}
-										onChange={(value) => handleLineItemChange(index, 'amount', value)}
-										variant='formatted-number'
-										inputPrefix={getCurrencySymbol(currency)}
-										placeholder='0.00'
-									/>
-									<Input
-										label='Total'
-										value={`${(parseFloat(item.amount || '0') * parseFloat(item.quantity || '0')).toFixed(2)}`}
-										disabled
-										variant='formatted-number'
-										inputPrefix={getCurrencySymbol(currency)}
-										placeholder='0.00'
-									/>
-									<Button variant='outline' className='size-[42px]' onClick={() => handleRemoveLineItem(index)}>
-										<Trash2 className='w-4 h-4' />
-									</Button>
+								<div key={index} className='mb-4 grid grid-cols-12 items-end gap-3 min-w-0'>
+									<div className='col-span-12 min-w-0 sm:col-span-5'>
+										<Input
+											label={index === 0 ? 'Item Name' : ''}
+											value={item.display_name}
+											onChange={(value) => handleLineItemChange(index, 'display_name', value)}
+											placeholder='Enter item name'
+										/>
+									</div>
+									<div className='col-span-4 min-w-0 sm:col-span-2'>
+										<Input
+											label={index === 0 ? 'Quantity' : ''}
+											value={item.quantity}
+											onChange={(value) => handleLineItemChange(index, 'quantity', value)}
+											variant='integer'
+											placeholder='1'
+										/>
+									</div>
+									<div className='col-span-4 min-w-0 sm:col-span-2'>
+										<Input
+											label={index === 0 ? 'Amount' : ''}
+											value={item.amount}
+											onChange={(value) => handleLineItemChange(index, 'amount', value)}
+											variant='formatted-number'
+											inputPrefix={getCurrencySymbol(currency)}
+											placeholder='0.00'
+										/>
+									</div>
+									<div className='col-span-3 min-w-0 sm:col-span-2'>
+										<Input
+											label={index === 0 ? 'Total' : ''}
+											value={`${(parseFloat(item.amount || '0') * parseFloat(item.quantity || '0')).toFixed(2)}`}
+											disabled
+											variant='formatted-number'
+											inputPrefix={getCurrencySymbol(currency)}
+											placeholder='0.00'
+										/>
+									</div>
+									<div className='col-span-1 flex items-end justify-end'>
+										<Button variant='outline' className='size-[42px] shrink-0' onClick={() => handleRemoveLineItem(index)}>
+											<Trash2 className='w-4 h-4' />
+										</Button>
+									</div>
 								</div>
 							))}
 
