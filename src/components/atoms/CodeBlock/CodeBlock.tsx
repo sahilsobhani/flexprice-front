@@ -23,7 +23,7 @@ const CodeBlock: FC<CodeBlockProps> = ({ code, language, theme = themes.nightOwl
 		<div className={cn('relative', className)}>
 			<Highlight theme={theme} code={code} language={language}>
 				{({ className, style, tokens, getLineProps, getTokenProps }) => (
-					<pre className={`${className} p-4 overflow-x-auto`} style={style}>
+					<pre dir='ltr' className={`${className} p-4 overflow-x-auto`} style={style}>
 						{tokens.map((line, i) => (
 							<div key={i} {...getLineProps({ line })}>
 								{line.map((token, key) => (
