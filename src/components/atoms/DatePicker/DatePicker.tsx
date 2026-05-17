@@ -25,6 +25,7 @@ interface DatePickerProps {
 	minDate?: Date;
 	maxDate?: Date;
 	className?: string;
+	triggerClassName?: string;
 	labelClassName?: string;
 	popoverClassName?: string;
 	popoverTriggerClassName?: string;
@@ -40,6 +41,7 @@ const DatePicker = ({
 	minDate,
 	maxDate,
 	className,
+	triggerClassName,
 	labelClassName,
 	popoverClassName,
 	popoverTriggerClassName,
@@ -79,12 +81,17 @@ const DatePicker = ({
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<div className={cn('flex w-full flex-col', popoverTriggerClassName)}>
+			<div className={cn('flex w-full min-w-0 flex-col', className, popoverTriggerClassName)}>
 				{label && <div className={cn('mb-1 w-full text-start text-sm', labelClassName)}>{label}</div>}
 				<PopoverTrigger asChild disabled={disabled}>
 					<Button
 						variant='outline'
-						className={cn('h-10 w-full min-w-0 justify-start text-start font-normal py-1', !date && 'text-muted-foreground', className)}
+						className={cn(
+							'flex h-10 w-full min-w-0 items-center justify-start rounded-[6px] border border-input bg-background px-3 py-2 text-sm font-normal ring-offset-background',
+							'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+							!date && 'text-muted-foreground',
+							triggerClassName,
+						)}
 						disabled={disabled}
 						type='button'>
 						<CalendarIcon className='me-2 h-4 w-4 shrink-0' />
