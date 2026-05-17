@@ -177,9 +177,9 @@ const PropertyFilterPopover: React.FC<Props> = ({
 					<DatePicker
 						setDate={(date) => handleFilterUpdate(filter.id, { valueDate: date })}
 						date={filter.valueDate}
-						{...inputProps}
+						className='min-w-0 flex-1'
+						triggerClassName='h-9 text-sm'
 						popoverContentClassName='w-full !z-[110]'
-						className={cn(inputProps.className, 'h-9 min-w-[182px] text-xs')}
 						placeholder={t('queryBuilder.selectDate')}
 					/>
 				),
